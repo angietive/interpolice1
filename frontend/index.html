@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTERPOLICE ENTERPRISE - Sistema de Acceso</title>
+  <link rel="stylesheet" href="./src/estilo/styleIndex.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Fondo animado -->
+  <div class="bg-animation">
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+  </div>
+
+  <!-- Contenedor de login -->
+  <div class="login-container">
+    <!-- Encabezado con logo -->
+    <div class="login-header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <!-- SVG del logo -->
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 class="logo-text">INTERPOLICE</h1>
+        <p class="logo-subtitle">ENTERPRISE SYSTEM</p>
+      </div>
+    </div>
+
+    <!-- Formulario de login -->
+    <form id="login-form" class="login-form">
+      <div class="form-group">
+        <label for="email" class="form-label">
+          <svg class="label-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2"/>
+            <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Correo Electrónico
+        </label>
+        <div class="input-container">
+          <input type="email" class="form-input" id="email" required autocomplete="email" placeholder="usuario@interpolice.galaxy">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <svg class="label-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="16" r="1" fill="currentColor"/>
+            <path d="M7 11V7A5 5 0 0 1 17 7V11" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Contraseña
+        </label>
+        <div class="input-container">
+          <input type="password" class="form-input" id="password" required autocomplete="current-password" placeholder="••••••••">
+          <button type="button" class="password-toggle" id="togglePassword">
+            <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mensaje de estado -->
+      <div id="login-message" class="message-container"></div>
+
+      <!-- Botón de envío -->
+      <button type="submit" class="btn-primary" id="loginBtn">
+        <span class="btn-text">Iniciar Sesión</span>
+        <div class="btn-loader" id="btnLoader">
+          <div class="spinner"></div>
+        </div>
+      </button>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+      </div>
+    </form>
+
+    <!-- Info del sistema -->
+    <div class="system-info">
+      <div class="device-compatibility">
+        <p class="compatibility-text">Compatible con:</p>
+        <div class="device-icons">
+          <span class="device-tag">Samsung SXVB45Q</span>
+          <span class="device-tag">iPhone 47 XPLUS</span>
+          <span class="device-tag">Terminal IBM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script principal -->
+  <script type="module" src="./src/js/login.js"></script>
+</body>
+</html>
