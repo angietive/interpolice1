@@ -4,8 +4,8 @@ import mysql from "mysql2/promise";
 const pool = mysql.createPool({
   host: process.env.HOST,
   user: process.env.DB_USER,
-  database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

@@ -7,6 +7,7 @@ import {
     getPlanetasDB,
     updateImagenDb
 } from "./ciudadano.model.js";
+import { getQRFilePath } from "../helpers/qrGenerator.js";
 
 export async function getAllCiudadano(req, res) {
     try {
@@ -83,6 +84,45 @@ export async function getPlanetas(req, res) {
         res.status(500).json({
             estado: "error",
             mensaje: error.code + "=>" + error.message + "=>" + "Error al obtener planetas",
+        });
+    }
+}
+
+export async function getCiudadanoQR(req, res) {
+    try {
+        const resultado = await getCiudadanoByCodigo_universalDB(req.params.codigo_universal);
+        if (!resultado.data) {
+            return res.status(404).json({
+                estado: "error",
+                mensaje: "No existe el ciudadano"
+            });
+        }
+        
+        const ciudadano = resultado.data;
+        if (!ciudadano.codigo_universal || !ciudadano.codigo_universal.endsWith('.png')) {
+            return res.status(404).json({
+                estado: "error",
+                mensaje: "No existe código QR para este ciudadano"
+            });
+        }
+        
+        const qrUrl = getQRFilePath(ciudadano.codigo_universal);
+        
+        res.status(200).json({
+            estado: "ok",
+            ciudadano: {
+                id: ciudadano.id_ciudadano,
+                nombre: ciudadano.nombre,
+                apellido: ciudadano.apellido,
+                codigo_universal: ciudadano.codigo_universal
+            },
+            qr_url: qrUrl,
+            qr_full_url: `${req.protocol}://${req.get('host')}${qrUrl}`
+        });
+    } catch (error) {
+        res.status(500).json({
+            estado: "error",
+            mensaje: error.message + " => Error al obtener QR del ciudadano",
         });
     }
 }

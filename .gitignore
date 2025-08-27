@@ -1,0 +1,51 @@
+# Dependencias
+node_modules/
+*/node_modules/
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Archivos temporales
+.nyc_output
+.grunt
+.bowser-cache
+.node_repl_history
+*.tmp
+*.temp
+
+# Archivos del IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos del SO
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos de build
+dist/
+build/
+coverage/
+
+# Archivos subidos por usuarios (opcional - comentar si quieres incluirlos)
+# backend/public/img/
+# backend/public/qr/

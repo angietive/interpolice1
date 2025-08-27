@@ -6,7 +6,8 @@ import {
     updateCiudadano,
     deleteCiudadano,
     getPlanetas,
-    subirImagen
+    subirImagen,
+    getCiudadanoQR
 } from './ciudadano.controller.js';
 import multer from 'multer';
 import { authMiddleware } from '../helpers/admTokens.js';
@@ -26,6 +27,7 @@ const subir = multer({ storage: almacenamiento }).single('file0');
 // Rutas para ciudadanos
 router.get('/ciudadanosTodos', getAllCiudadano);
 router.get('/ciudadanos/:codigo_universal', getCiudadanoByCodigo_universal);
+router.get('/ciudadanos/:codigo_universal/qr', getCiudadanoQR);
 router.post('/ciudadanos',authMiddleware, createCiudadano);
 router.post('/subirImagen/:codigo_universal', subir, subirImagen);
 router.put('/ciudadanos/:codigo_universal',authMiddleware, updateCiudadano);

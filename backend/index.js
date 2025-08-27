@@ -28,7 +28,8 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
-app.use('/qrs',express.static(path.join(__dirname,'public/qrs')))
+app.use('/qr', express.static(path.join(__dirname, 'public/qr')));
+app.use('/img', express.static(path.join(__dirname, 'public/img')));
 
 app.use("/", ciudadano)
 app.use("/", usuarios)
