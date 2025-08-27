@@ -324,7 +324,7 @@
             <section id="usuarios-section" class="content-section">
                 <div class="section-header">
                     <h2>Gestión de Usuarios</h2>
-                    <button class="btn-primary" id="addUserBtn">
+                    <button class="btn-primary" id="openAgregarUsuario">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
                             <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
@@ -333,6 +333,7 @@
                     </button>
                 </div>
 
+    
                 <div class="filters-bar">
                     <div class="search-box">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -453,12 +454,17 @@
                         <thead>
                             <tr>
                                 <th>Fecha</th>
+                                <th>Hora delito</th>
                                 <th>Ciudadano</th>
-                                <th>Tipos de Delito</th>
                                 <th>Lugar</th>
-                                <th>Gravedad</th>
+                                <th>Descripcion</th>
+                                <th>Planeta</th>
                                 <th>Registrado Por</th>
+                                <th>Fecha registro</th>
+                                <th>Fecha Modificacion</th>
+                                <th>tipo delito</th>
                                 <th>Acciones</th>
+                                
                             </tr>
                         </thead>
                         <tbody id="delitosTableBody">
@@ -679,6 +685,56 @@
             </section>
         </div>
     </main>
+
+    <!-- Modal Agregar Usuario -->
+    <div class="modal" id="modalAgregarUsuario" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:3000; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:10px; max-width:400px; width:90%; margin:auto; padding:2rem; position:relative; box-shadow:0 8px 32px rgba(0,0,0,0.25);">
+            <span class="close" id="closeAgregarUsuario" style="position:absolute; top:1rem; right:1rem; font-size:1.5rem; cursor:pointer;">&times;</span>
+            <h2 style="margin-bottom:1.5rem;">Agregar Usuario</h2>
+            <form id="formAgregarUsuario">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+                <div class="form-group">
+                    <label for="password_hash">Contraseña</label>
+                    <input type="password" id="password_hash" name="password_hash" required />
+                </div>
+                <div class="form-group">
+                    <label for="rol">Rol</label>
+                    <select id="rol" name="rol" required>
+                        <option value="administrador">Administrador</option>
+                        <option value="general">General</option>
+                        <option value="policia">Policía</option>
+                        <option value="secretaria">Secretaria</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono" />
+                </div>
+                <div class="form-group">
+                    <label for="codigo">Código</label>
+                    <input type="text" id="codigo" name="codigo" />
+                </div>
+                <div class="form-group">
+                    <label for="activo">Activo</label>
+                    <select id="activo" name="activo">
+                        <option value="1">Sí</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="form-actions" style="margin-top:1.5rem; text-align:right;">
+                    <button type="submit" class="btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Fin Modal Agregar Usuario -->
 
     <!-- Modals -->
     <div class="modal-backdrop" id="modalBackdrop"></div>

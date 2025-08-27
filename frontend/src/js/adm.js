@@ -453,6 +453,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Mapear campos reales
                 const activo = user.activo === 1 || user.activo === true;
                 const ultimoAcceso = user.ultimo_acceso || user.ultimoAcceso || '';
+                // Usar rol_nombre que viene del backend con el JOIN
+                const rolNombre = user.rol_nombre || user.rol || 'Sin rol';
                 return `
                 <tr>
                     <td>
@@ -465,8 +467,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                     <td>${user.email || ''}</td>
                     <td>
-                        <span class="status-badge ${getRoleBadgeClass(user.rol)}">
-                            ${formatRol(user.rol)}
+                        <span class="status-badge ${getRoleBadgeClass(rolNombre)}">
+                            ${formatRol(rolNombre)}
                         </span>
                     </td>
                     <td>
@@ -565,71 +567,45 @@ document.addEventListener('DOMContentLoaded', function() {
         const tableBody = document.getElementById('delitosTableBody');
         if (!tableBody) return;
 
-        // Datos simulados
-        const delitos = [
-            {
-                id: 1,
-                fecha: '2025-07-28',
-                ciudadano: 'Marcus Johnson',
-                tipos: ['Conducir ebrio', 'Daño en bien ajeno'],
-                lugar: 'Av. Principal, Sector 7, Tierra',
-                gravedad: 'grave',
-                registradoPor: 'Oficial García'
-            },
-            {
-                id: 2,
-                fecha: '2025-07-27',
-                ciudadano: 'Chen Wei',
-                tipos: ['Embriaguez en vía pública'],
-                lugar: 'Plaza Central, Nueva Marte',
-                gravedad: 'menor',
-                registradoPor: 'Oficial Rodriguez'
-            },
-            {
-                id: 3,
-                fecha: '2025-07-26',
-                ciudadano: 'Sarah Connor',
-                tipos: ['Hurto simple'],
-                lugar: 'Centro Comercial, Kepler Station',
-                gravedad: 'grave',
-                registradoPor: 'Oficial Kim'
-            }
-        ];
+        try {
+            const response = await fetch('http://localhost:4100/delitos');
+            if (!response.ok) throw new Error('Error al obtener delitos');
+            const data = await response.json();
+            const delitos = Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
 
-        tableBody.innerHTML = delitos.map(delito => `
-            <tr>
-                <td>${formatDate(delito.fecha)}</td>
-                <td style="font-weight: 500;">${delito.ciudadano}</td>
-                <td>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
-                        ${delito.tipos.map(tipo => `
-                            <span style="background: #f1f5f9; padding: 0.125rem 0.375rem; border-radius: 12px; font-size: 0.75rem; color: #64748b;">
-                                ${tipo}
-                            </span>
-                        `).join('')}
-                    </div>
-                </td>
-                <td style="font-size: 0.875rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${delito.lugar}">
-                    ${delito.lugar}
-                </td>
-                <td>
-                    <span class="status-badge ${getGravedadBadgeClass(delito.gravedad)}">
-                        ${formatGravedad(delito.gravedad)}
-                    </span>
-                </td>
-                <td>${delito.registradoPor}</td>
-                <td>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn-outline" onclick="viewDelito(${delito.id})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                            Ver
-                        </button>
-                        <button class="btn-outline" onclick="editDelito(${delito.id})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                            Editar
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+            if (delitos.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="8">No hay delitos registrados</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = delitos.map(delito => `
+                <tr>
+                    <td>${delito.fecha_delito || ''}</td>
+                    <td>${delito.hora_delito || ''}</td>
+                    <td>${delito.nombre_ciudadano || ''}</td>
+                    <td>${delito.lugar || ''}</td>
+                    <td>${delito.descripcion || ''}</td>
+                    <td>${delito.nombre_planeta || ''}</td>
+                    <td>${delito.nombre_usuario || ''}</td>
+                    <td>${delito.fecha_registro || ''}</td>
+                    <td>${delito.fecha_actualizacion || ''}</td>
+                    <td>${delito.nombre_delito || ''}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-outline" onclick="viewCiudadano(${delito.id_delito || ''})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                                Ver
+                            </button>
+                            <button class="btn-outline" onclick="editCiudadano(${delito.id_delito || ''})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                                Editar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            tableBody.innerHTML = `<tr><td colspan="8">Error al cargar delitos</td></tr>`;
+            console.error(error);
+        }
     }
 
     // Configurar gráficas
@@ -673,21 +649,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function getRoleBadgeClass(rol) {
         const classes = {
             'administrador': 'danger',
-            'general': 'warning',
+            'general': 'warning', 
             'policia': 'primary',
             'secretaria': 'success'
         };
-        return classes[rol] || 'primary';
+        // Normalizar el rol a minúsculas para comparación
+        const normalizedRol = rol?.toLowerCase();
+        return classes[normalizedRol] || 'primary';
     }
 
     function formatRol(rol) {
+        // Si ya es un nombre formateado del backend, devolverlo tal como está
+        // Si es un código, formatearlo apropiadamente
         const roles = {
             'administrador': 'Administrador',
             'general': 'General',
             'policia': 'Policía',
             'secretaria': 'Secretaria'
         };
-        return roles[rol] || rol;
+        
+        // Si el rol ya está en formato de nombre, devolverlo con la primera letra en mayúscula
+        if (!roles[rol?.toLowerCase()]) {
+            return rol ? rol.charAt(0).toUpperCase() + rol.slice(1).toLowerCase() : 'Sin rol';
+        }
+        
+        return roles[rol?.toLowerCase()] || rol || 'Sin rol';
     }
 
     function getGravedadBadgeClass(gravedad) {
@@ -798,7 +784,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Funciones de modal (placeholders)
     function openUserModal() {
-        showNotification('Modal de usuario en desarrollo', 'info');
+        const modal = document.getElementById('modalAgregarUsuario');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        if (modal && modalBackdrop) {
+            modal.style.display = 'block';
+            modalBackdrop.style.display = 'block';
+            console.log('Abrir modal de agregar usuario');
+        }
     }
 
     function openCiudadanoModal() {
@@ -1024,4 +1016,96 @@ document.addEventListener('DOMContentLoaded', function() {
     // Manejar navegación inicial basada en URL
     const initialSection = window.location.hash.slice(1) || 'dashboard';
     navigateToSection(initialSection);
+
+    // Modal Agregar Usuario
+    const modal = document.getElementById('modalAgregarUsuario');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const closeBtn = document.getElementById('closeAgregarUsuario');
+    const form = document.getElementById('formAgregarUsuario');
+
+    // Botón para abrir el modal (debes agregar un botón with id="openAgregarUsuario" en tu HTML donde lo necesites)
+    const openBtn = document.getElementById('openAgregarUsuario');
+    if (openBtn) {
+        openBtn.addEventListener('click', function() {
+            modal.style.display = 'block';
+            modalBackdrop.style.display = 'block';
+        });
+    }
+
+    // Cerrar modal
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+            modalBackdrop.style.display = 'none';
+        });
+    }
+    if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', function() {
+            modal.style.display = 'none';
+            modalBackdrop.style.display = 'none';
+        });
+    }
+
+
+    // Modal Agregar Usuario - Enviar datos al backend
+    const formUsuario = document.getElementById('formAgregarUsuario');
+    if (formUsuario) {
+        formUsuario.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(formUsuario);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Mapear el rol a id_rol
+            const rolesMap = {
+                'administrador': 1,
+                'general': 4,
+                'policia': 2,
+                'secretaria': 3
+            };
+            
+            // Preparar datos para el backend
+            const userData = {
+                nombre: data.nombre,
+                email: data.email,
+                password_hash: data.password_hash, // El backend lo encriptará
+                id_rol: rolesMap[data.rol] || 1,
+                activo: parseInt(data.activo) || 1,
+                telefono: data.telefono || null,
+                codigo: data.codigo || null
+            };
+            
+            console.log('Enviando datos:', userData);
+            
+            try {
+                const response = await fetch('http://localhost:4100/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                
+                const result = await response.json();
+                console.log('Respuesta del servidor:', result);
+                
+                if (!response.ok || result.estado === 'error') {
+                    throw new Error(result.mensaje || 'Error al agregar usuario');
+                }
+                
+                // Éxito
+                formUsuario.reset();
+                document.getElementById('modalAgregarUsuario').style.display = 'none';
+                document.getElementById('modalBackdrop').style.display = 'none';
+                
+                // Recargar tabla
+                if (typeof loadUsersTable === 'function') {
+                    loadUsersTable();
+                }
+                
+                showNotification('Usuario agregado correctamente', 'success');
+                
+            } catch (error) {
+                console.error('Error al agregar usuario:', error);
+                showNotification('Error al agregar usuario: ' + error.message, 'error');
+            }
+        });
+    }
 });
