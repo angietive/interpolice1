@@ -1,12 +1,6 @@
 import express from "express"; //hecho con es6
 import "dotenv/config";
 
-// Debug: Verificar variables de entorno importantes
-console.log('=== VARIABLES DE ENTORNO ===');
-console.log('SALT:', process.env.SALT ? 'Definida' : 'No definida');
-console.log('TOKEN_LIVE:', process.env.TOKEN_LIVE ? 'Definida' : 'No definida');
-console.log('APP_PORT:', process.env.APP_PORT || 'No definida');
-console.log('==========================');
 
 // para probar si funciono import "./src/dbConexion.js"
 import db from "./src/config/dbConexion.js";
@@ -37,7 +31,8 @@ app.use("/", loginRoutes);
 app.use("/delitos", delitosRoutes);
 app.use("/", evidenciasRoutes);
 
-const puerto = process.env.APP_PORT || 4100;
+const puerto = process.env.PORT || process.env.APP_PORT || 4100;
+
 
 app.listen(puerto, () => {
   console.log(`api ejecutandose en el puerto ${puerto}`);
